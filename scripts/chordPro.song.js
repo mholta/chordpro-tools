@@ -5,7 +5,7 @@
  * @returns
  */
 const isLineWithOnlyChords = (line) => {
-  const items = line.replace(/ +/, ' ').split(' ');
+  const items = line.replace(/ +/, ' ').trim().split(' ');
   for (let i = 0; i < items.length; i++) {
     let chord = items[i];
     if (!(chord.startsWith('[') && chord.endsWith(']'))) return false;
@@ -244,14 +244,17 @@ const newSongObjectFromTemplate = (template, bypassMeta = false) => {
         const type = ONLY_CHORDS_LINE;
         const elements = [];
 
-        for (chordElement of line.split(' ')) {
+        for (chordElement of line.replace(/ +/, ' ').trim().split(' ')) {
           let type; // CHORD | DIVIDER
           let word;
           try {
-            word = newChordObjectFromString(chordElement.unwrapChord(), transposeLogic);
+            word = newChordObjectFromString(
+              chordElement.substring(1, chordElement.length - 1),
+              transposeLogic
+            );
             type = CHORD_LINE_CHORD;
           } catch (error) {
-            word = chordElement.unwrapChord();
+            word = chordElement.substring(1, chordElement.length - 1);
             type = CHORD_LINE_DIVIDER;
           }
 
